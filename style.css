@@ -1,0 +1,53 @@
+#download {
+	display: flex;
+	justify-content: space-evenly;
+	text-align: center;
+}
+
+#levels li:last-child button {
+	display: none;
+}
+
+#options label {
+	position: relative;
+}
+
+#options label > * {
+	position: absolute;
+	left: 12em;
+}
+
+#options ul {
+	padding-left: 0;
+}
+
+#side {
+	float: right;
+}
+
+body {
+	font-family: sans-serif;
+	margin: 1em 25%;
+}
+
+fieldset {
+	border-color: #80C0FF;
+	border-radius: .5em;
+	margin: 0 1em;
+}
+
+html {
+	background-color: #80C0FF;
+}
+
+label {
+	margin: 1em;
+}
+
+ul {
+	list-style: none;
+}
+
+[draggable] {
+	cursor: grab;
+}

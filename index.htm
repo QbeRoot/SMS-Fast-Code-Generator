@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Super Mario Sunshine Fast Generator</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<form method="GET">
+			<div id="side">
+				<fieldset>
+					<legend>Game version</legend>
+					<label><input type="radio" name="version" value="pal" required /> PAL</label>
+					<label><input type="radio" name="version" value="ntsc-u" required /> US</label>
+					<label><input type="radio" name="version" value="ntsc-j10" required /> JP (1.0)</label>
+					<label><input type="radio" name="version" value="ntsc-j11" required /> JP A (1.1)</label>
+				</fieldset>
+				<fieldset id="options">
+					<legend>Options</legend>
+					<ul>
+						<li><label>Random order <input type="checkbox" name="random" /></label></li>
+						<li><label>Remove saveboxes <input type="checkbox" name="nosave" /></label></li>
+						<li>
+							<label>Remove dialogue
+								<select name="notext">
+									<option value="yes">Always</option>
+									<option value="pv5" selected>Not in Pianta 5</option>
+									<option value="no">Never</option>
+								</select>
+							</label>
+						</li>
+						<li>
+							<label>Skippable cutscenes
+								<select name="nofmvs">
+									<option value="yes">Always</option>
+									<option value="pp1" selected>Not in Pinna 1</option>
+									<option value="no">Never</option>
+								</select>
+							</label>
+						</li>
+						<li>
+							<label>Timer
+								<select name="timer">
+									<option value="none" selected>None</option>
+									<option value="sgt">Shine Get Timer</option>
+									<option value="stt">Shine Touch Timer</option>
+								</select>
+							</label>
+						</li>
+					</ul>
+				</fieldset>
+				<fieldset id="download">
+					<legend>Download</legend>
+					<input type="submit" name="gct" value="GCT" />
+					<input type="submit" name="ini" value="Dolphin INI" />
+					<input type="submit" name="txt" value="GCM TXT" />
+				</fieldset>
+				<footer>
+					<ul>
+						<li>Generator and stage list loader by <a href="https://twitter.com/Qbe_Root">Noki Doki</a></li>
+						<li>Timers and savebox/dialogue/FMV skips by <a href="https://twitter.com/psychonauter">Psychonauter</a></li>
+						<li><a href="http://gct.zint.ch/">Main SMS cheatfile generator</a>
+					</ul>
+				</footer>
+			</div>
+			<fieldset>
+				<legend>Levels</legend>
+				<ol id="levels">
+					<li>
+						<select name="levels[]">
+							<option value="0F00" selected>Select a level…</option>
+							<optgroup label="Delfino Plaza">
+								<option value="1400">Airstrip (red coins)</option>
+								<option value="1500">Slide</option>
+								<option value="1600">Pachinko</option>
+								<option value="1700">Grass pipe</option>
+								<option value="1800">Lily Pad Ride</option>
+								<option value="1D00">Jail secret</option>
+								<option value="3400">Corona Mountain</option>
+							</optgroup>
+							<optgroup label="Bianco Hills">
+								<option value="0200">Bianco 1</option>
+								<option value="0201">Bianco 2</option>
+								<option value="0202">Bianco 3</option>
+								<option value="0203">Bianco 4</option>
+								<option value="0204">Bianco 5</option>
+								<option value="0205">Bianco 6</option>
+								<option value="0206">Bianco 7</option>
+								<option value="0207">Bianco 8</option>
+							</optgroup>
+							<optgroup label="Ricco Harbor">
+								<option value="0300">Ricco 1</option>
+								<option value="0301">Ricco 2</option>
+								<option value="0302">Ricco 3</option>
+								<option value="0303">Ricco 4</option>
+								<option value="0304">Ricco 5</option>
+								<option value="0305">Ricco 6</option>
+								<option value="0306">Ricco 7</option>
+								<option value="0307">Ricco 8</option>
+							</optgroup>
+							<optgroup label="Gelato Beach">
+								<option value="0400">Gelato 1</option>
+								<option value="0401">Gelato 2</option>
+								<option value="0402">Gelato 3</option>
+								<option value="0403">Gelato 4</option>
+								<option value="0404">Gelato 5</option>
+								<option value="0405">Gelato 6</option>
+								<option value="0406">Gelato 7</option>
+								<option value="0407">Gelato 8</option>
+							</optgroup>
+							<optgroup label="Pinna Park">
+								<option value="0500">Pinna 1</option>
+								<option value="0501">Pinna 2</option>
+								<option value="0502">Pinna 3</option>
+								<option value="0503">Pinna 4</option>
+								<option value="0504">Pinna 5</option>
+								<option value="0505">Pinna 6</option>
+								<option value="0506">Pinna 7</option>
+								<option value="0507">Pinna 8</option>
+							</optgroup>
+							<optgroup label="Sirena Beach">
+								<option value="0600">Sirena 1</option>
+								<option value="0601">Sirena 2</option>
+								<option value="0602">Sirena 3</option>
+								<option value="0603">Sirena 4</option>
+								<option value="0604">Sirena 5</option>
+								<option value="0605">Sirena 6</option>
+								<option value="0606">Sirena 7</option>
+								<option value="0607">Sirena 8</option>
+							</optgroup>
+							<optgroup label="Noki Bay">
+								<option value="0900">Noki 1</option>
+								<option value="0901">Noki 2</option>
+								<option value="0902">Noki 3</option>
+								<option value="0903">Noki 4</option>
+								<option value="0904">Noki 5</option>
+								<option value="0905">Noki 6</option>
+								<option value="0906">Noki 7</option>
+								<option value="0907">Noki 8</option>
+							</optgroup>
+							<optgroup label="Pianta Village">
+								<option value="0800">Pianta 1</option>
+								<option value="0801">Pianta 2</option>
+								<option value="0802">Pianta 3</option>
+								<option value="0803">Pianta 4</option>
+								<option value="0804">Pianta 5</option>
+								<option value="0805">Pianta 6</option>
+								<option value="0806">Pianta 7</option>
+								<option value="0807">Pianta 8</option>
+							</optgroup>
+							<optgroup label="Secret areas">
+								<option value="2F00">Bianco 3 secret</option>
+								<option value="2E00">Bianco 6 secret</option>
+								<option value="3000">Ricco 4 secret</option>
+								<option value="2000">Gelato 1 secret</option>
+								<option value="3200">Pinna 2 secret</option>
+								<option value="2900">Pinna 6 secret</option>
+								<option value="3300">Sirena 2 secret</option>
+								<option value="2800">Sirena 4 secret</option>
+								<option value="1F00">Noki 6 secret</option>
+								<option value="2A00">Pianta 5 secret</option>
+							</optgroup>
+							<optgroup label="Sublevels">
+								<option value="3700">Windmill (Bianco 2)</option>
+								<option value="1E00">Race course (Ricco 2)</option>
+								<option value="2100">Sand bird (Gelato 4)</option>
+								<option value="3A01">Mecha-Bowser fight (Pinna 1)</option>
+								<option value="0E00">Casino Delfino (Sirena 4)</option>
+								<option value="0E01">Casino Delfino (Sirena 5)</option>
+								<option value="3900">Deep Sea of Mare (Noki 4)</option>
+								<option value="3C00">Bowser fight (Corona)</option>
+							</optgroup>
+						</select>
+						<button type="button">×</button>
+					</li>
+				</ol>
+				<button id="clear" type="button">Clear list</button>
+				<select id="presets">
+					<option value="" selected>Load a preset…</option>
+					<option value="0200020202030204040004060800080108020803080408050806050005010502050305020506030003010302030303040305030602050206060006010602060306040605060609000901090209030904090509063400">Any% usual route</option>
+					<option value="0200020202030204040004060800080108020803080408050806050005010502050305020506020502060600060106020603060406050606090009010902090309040905090603000301030203030304030503063400">Any% Ricco late</option>
+					<option value="0200020202030204040004010402040304040405040605000501050205030504050505060300030103020303030403050306020502060600060106020603060406050606090009010902090309040905090608000801080208030804080508063400">Any% No Major Skips</option>
+					<option value="020002010202020308000801080208030804080508060807050005010502050305040505050605070300030103020303030403050306030702040205020602070600060106020603060406050606060709000901090209030904090509060907040004010402040304040403040504063400">All Episodes</option>
+					<option value="020002010202020208000801080208030804080408040805080608070807050005010501050205030504050405050505050605070300030103010302030303030304030503050306030702030204020502050205020602070600060106010602060306030603060406050606060709000901090109010902090309040905090509060907040004000400040104020403040504040403040204063400">All Level Shines</option>
+				</select>
+			</fieldset>
+		</form>
+		<script src="script.js"></script>
+	</body>
+</html>
