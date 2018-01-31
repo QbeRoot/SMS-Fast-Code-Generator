@@ -2,10 +2,13 @@
 const levels = document.querySelector('#levels'),
 	template = levels.lastElementChild
 
+template.querySelector('button').style.visibility = 'hidden'
+
 function appendLevel(code) {
 	const clone = template.cloneNode(true)
 	clone.draggable = true
 	clone.querySelector('select').value = code
+	clone.querySelector('button').style.visibility = 'visible'
 	levels.insertBefore(clone, template)
 }
 
@@ -36,12 +39,16 @@ levels.addEventListener('click', function ({target: t}) {
 	let dragging
 	
 	levels.addEventListener('dragstart', function ({target: t, dataTransfer: d}) {
-		dragging = t
-		d.setData('text/plain', t.querySelector('select').value)
+		if (t.nodeName.toUpperCase() !== "LI" || t === template) {
+			d.clearData()
+		} else {
+			dragging = t
+			d.setData('text/plain', t.querySelector('select').value)
+		}
 	})
 	
-	levels.addEventListener('dragover', function ({target: t}) {
-		if (t !== dragging && t.nodeName.toUpperCase() === 'LI') {
+	levels.addEventListener('dragover', function ({target: t, dataTransfer: d}) {
+		if (t !== dragging && t.nodeName.toUpperCase() === "LI" && d.items.length > 0) {
 			levels.insertBefore(dragging, t)
 		}
 	})
