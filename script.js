@@ -2,13 +2,10 @@
 const levels = document.querySelector('#levels'),
 	template = levels.lastElementChild
 
-template.querySelector('button').style.visibility = 'hidden'
-
 function appendLevel(code) {
 	const clone = template.cloneNode(true)
 	clone.draggable = true
 	clone.querySelector('select').value = code
-	clone.querySelector('button').style.visibility = 'visible'
 	levels.insertBefore(clone, template)
 }
 
