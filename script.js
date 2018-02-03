@@ -1,4 +1,4 @@
-'strict mode'
+'use strict'
 const levels = document.querySelector('#levels'),
 	template = levels.lastElementChild
 
@@ -74,7 +74,7 @@ document.querySelector('form').addEventListener('click', function (e) {
 	const levelCodes = Array.prototype.map.call(levels.querySelectorAll('select'), s => s.value),
 		params = e.currentTarget.elements
 	
-	if (params['random'].checked) {
+	if (params['order'].value !== 'list') {
 		levelCodes.pop()
 	}
 	
@@ -91,15 +91,13 @@ document.querySelector('form').addEventListener('click', function (e) {
 		xhr.onerror = () => reject('Network error')
 		xhr.send()
 	}).then(function (game) {
-		const levelWords = Math.ceil(levelCodes.length / 2),
+		const branchBase = 0x14 + 0x24 * (params['order'].value !== 'list'),
 			asm = []
-		asm.push('48' + ('00000' + (levelWords + 1 << 2 | 1).toString(16).toUpperCase()).slice(-6)) // bl to the code
-		for (let i = 0; i < levelWords; ++i) {
-			asm.push(levelCodes[2 * i] + (levelCodes[2 * i + 1] || '0000'))
+		asm.push('48' + ('00000' + (Math.ceil(levelCodes.length / 2) + 1 << 2 | 1).toString(16).toUpperCase()).slice(-6)) // bl to the code
+		for (let i = levelCodes.length - 1; i >= 0; i -= 2) {
+			asm.push(levelCodes[i] + (levelCodes[i - 1] || '0000'))
 		}
-		if (!params['random'].checked || params['timer'].value !== 'none') {
-			asm.push('3C80817F') // lis r4, 0x817F
-		}
+		asm.push('3C80817F') // lis r4, 0x817F
 		if (params['timer'].value !== 'none') {
 			asm.push('38000000') // li r0, 0
 			asm.push('9004010C') // stw r0, 0x010C(r4)
@@ -107,33 +105,47 @@ document.querySelector('form').addEventListener('click', function (e) {
 			asm.push('98040101') // stb r0, 0x0101(r4)
 		}
 		asm.push('881F0012') // lbz r0, 0x12(r31)
-		if (!params['random'].checked) {
-			asm.push('2C00000F') // cmpwi r0, 15
-			asm.push('40820010') // bne- 0x10
-			asm.push('38000000') // li r0, 0
-			asm.push('90040000') // stw r0, 0(r4)
-			asm.push('4800002C') // b 0x2C
-		}
+		asm.push('2C00000F') // cmpwi r0, 15
+		asm.push('40820010') // bne- 0x10
+		asm.push('3800' + ('000' + ((levelCodes.length - (params['order'].value === 'random')) * 2).toString(16).toUpperCase()).slice(-4)) // li r0, length
+		asm.push('90040000') // stw r0, 0(r4)
+		asm.push('4800' + ('000' + (branchBase + 0x38).toString(16).toUpperCase()).slice(-4)) // b done
 		asm.push('2C000001') // cmpwi r0, 1
-		if (params['random'].checked) {
-			asm.push('41810030') // bgt- 0x30
-			asm.push('7C6C42E6') // mftbl r3
-			asm.push('3880' + ('000' + (levelCodes.length * 2).toString(16).toUpperCase()).slice(-4)) // li r4, length
-			asm.push('7C032396') // divwu r0, r3, r4
-			asm.push('7C0021D6') // mullw r0, r0, r4
-			asm.push('7C601850') // sub r3, r3, r0
-			asm.push('5463003C') // rlwinm r3, r3, 0, 0, 30
-		} else {
-			asm.push('41810024') // bgt- 0x24
-			asm.push('80640000') // lwz r3, 0(r4)
-			asm.push('38030002') // addi r0, r3, 2
-			asm.push('90040000') // stw r0, 0(r4)
+		asm.push('4181' + ('000' + (branchBase + 0x30).toString(16).toUpperCase()).slice(-4)) // bgt- done
+		asm.push('80AD' + game.fmOffset) // lwz r5, TFlagManager::smInstance
+		asm.push('7CC802A6') // mflr r6
+		asm.push('80640000') // lwz r3, 0(r4)
+		asm.push('881F000E') // lbz r0, 0x0E(r31)
+		asm.push('2C00000F') // cmpwi r0, 15
+		asm.push('41820010') // beq- 0x10
+		asm.push('880500CC') // lbz r0, 0xCC(r5)
+		asm.push('54000673') // rlwinm. r0, r0, 0, 25, 25
+		asm.push('4182' + ('000' + branchBase.toString(16).toUpperCase()).slice(-4)) // beq- loadStage
+		if (params['order'].value === 'random') {
+			asm.push('38630002') // addi r3, r3, 2
 		}
-		asm.push('7C8802A6') // mflr r4
-		asm.push('7C641A2E') // lhzx r3, r4, r3
+		asm.push('2C030000') // cmpwi r3, 0
+		asm.push('4081' + ('000' + (branchBase + 4 * (params['order'].value !== 'random')).toString(16).toUpperCase()).slice(-4)) // ble- done
+		if (params['order'].value !== 'list') {
+			asm.push('7CEC42E6') // mftbl r7
+			asm.push('7C071B96') // divwu r0, r7, r3
+			asm.push('7C0019D6') // mullw r0, r0, r3
+			asm.push('7CE03850') // sub r7, r7, r0
+			asm.push('54E7003C') // rlwinm r7, r7, 0, 0, 30
+		}
+		asm.push('3863FFFE') // subi r3, r3, 2
+		if (params['order'].value !== 'random') {
+			asm.push('90640000') // stw r3, 0(r4)
+		}
+		if (params['order'].value !== 'list') {
+			asm.push('7C061A2E') // lhzx r0, r6, r3
+			asm.push('7C863A2E') // lhzx r4, r6, r7
+			asm.push('7C063B2E') // sthx r0, r6, r7
+			asm.push('7C861B2E') // sthx r4, r6, r3
+		}
+		asm.push('7C661A2E') // lhzx r3, r6, r3
 		asm.push('B07F0012') // sth r3, 0x12(r31)
-		asm.push('808D' + game.fmOffset) // lwz r4, TFlagManager::smInstance
-		asm.push('986400DF') // stb r3, 0xDF(r4)
+		asm.push('986500DF') // stb r3, 0xDF(r5)
 		asm.push('807F0020') // lwz r3, 0x20(r31)
 		
 		if (asm.length % 2 === 0) {

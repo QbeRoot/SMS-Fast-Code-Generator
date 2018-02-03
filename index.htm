@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<title>Super Mario Sunshine Fast Generator</title>
+		<title>Super Mario Sunshine Fast Codes Generator</title>
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
@@ -18,7 +18,15 @@
 				<fieldset id="options">
 					<legend>Options</legend>
 					<ul>
-						<li><label>Random order <input type="checkbox" name="random" /></label></li>
+						<li>
+							<label>Order
+								<select name="order">
+									<option value="list" selected>As specified</option>
+									<option value="shuffle">Random, no duplicates</option>
+									<option value="random">Fully random</option>
+								</select>
+							</label>
+						</li>
 						<li><label>Remove saveboxes <input type="checkbox" name="nosave" /></label></li>
 						<li>
 							<label>Remove dialogue
