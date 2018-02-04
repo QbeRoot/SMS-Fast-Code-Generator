@@ -36,7 +36,7 @@ levels.addEventListener('click', function ({target: t}) {
 	let dragging
 	
 	levels.addEventListener('dragstart', function ({target: t, dataTransfer: d}) {
-		if (t.nodeName.toUpperCase() !== "LI" || t === template) {
+		if (t.nodeName.toUpperCase() !== 'LI' || t === template) {
 			d.clearData()
 		} else {
 			dragging = t
@@ -45,19 +45,25 @@ levels.addEventListener('click', function ({target: t}) {
 	})
 	
 	levels.addEventListener('dragover', function ({target: t, dataTransfer: d}) {
-		if (t !== dragging && t.nodeName.toUpperCase() === "LI" && d.items.length > 0) {
+		if (t !== dragging && t.nodeName.toUpperCase() === 'LI' && d.items.length > 0) {
 			levels.insertBefore(dragging, t)
 		}
 	})
 }
 
+document.querySelector('#ending').disabled = document.querySelector('#order').value === 'random';
+document.querySelector('#order').addEventListener('change', function ({currentTarget: t}) {
+   document.querySelector('#ending').disabled = t.value === 'random';
+})
+
 document.querySelector('#presets').addEventListener('change', function ({currentTarget: t}) {
 	if (levels.childElementCount <= 1 || confirm('Loading a preset will erase your current list. Continue?')) {
 		clearLevels()
-		const preset = t.value
+		const [preset, ending] = t.value.split(';')
 		for (let i = 0; i <= preset.length - 4; i += 4) {
 			appendLevel(preset.substr(i, 4))
 		}
+		if (ending) document.querySelector('#ending').value = ending
 	}
 	t.value = ''
 })
@@ -74,9 +80,7 @@ document.querySelector('form').addEventListener('click', function (e) {
 	const levelCodes = Array.prototype.map.call(levels.querySelectorAll('select'), s => s.value),
 		params = e.currentTarget.elements
 	
-	if (params['order'].value !== 'list') {
-		levelCodes.pop()
-	}
+	levelCodes.pop()
 	
 	if (levelCodes.length === 0) {
 		alert('No levels selected!')
@@ -125,7 +129,9 @@ document.querySelector('form').addEventListener('click', function (e) {
 			asm.push('38630002') // addi r3, r3, 2
 		}
 		asm.push('2C030000') // cmpwi r3, 0
-		asm.push('4081' + ('000' + (branchBase + 4 * (params['order'].value !== 'random')).toString(16).toUpperCase()).slice(-4)) // ble- done
+		asm.push('4081000C') // ble- 0x0C
+		asm.push('3860' + ending) // li r3, ending
+		asm.push('4800' + ('000' + (branchBase - 8 + 4 * (params['order'].value !== 'random')).toString(16).toUpperCase()).slice(-4)); // b done
 		if (params['order'].value !== 'list') {
 			asm.push('7CEC42E6') // mftbl r7
 			asm.push('7C071B96') // divwu r0, r7, r3
@@ -194,7 +200,7 @@ document.querySelector('form').addEventListener('click', function (e) {
 		if (navigator.msSaveOrOpenBlob) {
 			navigator.msSaveOrOpenBlob(file, filename)
 		} else {
-			let a = document.createElement("a"),
+			let a = document.createElement('a'),
 				url = URL.createObjectURL(file)
 			a.href = url
 			a.download = filename
