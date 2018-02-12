@@ -95,7 +95,7 @@ document.querySelector('form').addEventListener('click', function (e) {
 		xhr.onerror = () => reject('Network error')
 		xhr.send()
 	}).then(function (game) {
-		const branchBase = 0x14 + 0x24 * (params['order'].value !== 'list'),
+		const branchBase = 0x1C + 0x24 * (params['order'].value !== 'list'),
 			asm = []
 		asm.push('48' + ('00000' + (Math.ceil(levelCodes.length / 2) + 1 << 2 | 1).toString(16).toUpperCase()).slice(-6)) // bl to the code
 		for (let i = levelCodes.length - 1; i >= 0; i -= 2) {
