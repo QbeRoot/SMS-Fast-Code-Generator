@@ -36,6 +36,10 @@ fieldset {
 	margin: 0 1em;
 }
 
+header {
+	text-align: center;
+}
+
 html {
 	background-color: #80C0FF;
 }
